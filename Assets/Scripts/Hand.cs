@@ -6,6 +6,9 @@ using Valve.VR;
 public class Hand : MonoBehaviour
 {
     public SteamVR_Action_Boolean grabAction;
+    public SteamVR_Action_Boolean createPenAction;
+
+    public GameObject pen;
 
     private SteamVR_Behaviour_Pose pose;
     private FixedJoint joint;
@@ -13,6 +16,8 @@ public class Hand : MonoBehaviour
     private Interactable currentInteractable;
 
     public List<Interactable> contactInteractables = new List<Interactable>();
+
+    public Whiteboard mainWhiteboard;
 
     private void Awake()
     {
@@ -28,17 +33,37 @@ public class Hand : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(createPenAction.GetStateDown(pose.inputSource))
+        {
+            if(currentInteractable == null)
+            {
+                GameObject newObject = Instantiate(pen, transform.position, transform.rotation);
+                WhiteboardMarker marker = newObject.GetComponent<WhiteboardMarker>();
+                marker.whiteboard = mainWhiteboard;
+                contactInteractables.Add(newObject.GetComponent<Interactable>());
+                PickUp();
+            }
+        }
+
         if (grabAction.GetStateDown(pose.inputSource))
         {
             Debug.Log("Down " + pose.inputSource);
-            PickUp();
+
+            if (currentInteractable == null)
+            {
+                PickUp();
+            }
+            else
+            {
+                Drop();
+            }
         }
 
-        if (grabAction.GetStateUp(pose.inputSource))
-        {
-            Debug.Log("Up " + pose.inputSource);
-            Drop();
-        }
+        //if (grabAction.GetStateUp(pose.inputSource))
+        //{
+        //    Debug.Log("Up " + pose.inputSource);
+        //    Drop();
+        //}
     }
 
     private void OnTriggerEnter(Collider other)

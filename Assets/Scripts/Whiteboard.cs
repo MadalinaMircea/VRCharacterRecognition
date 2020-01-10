@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class Whiteboard : MonoBehaviour
 {
-    private int textureSize = 600;
-    private int penSize = 15;
+    private int textureSize = 1000;
+    private int penSize = 20;
     private Texture2D texture;
     private Color[] color;
 
@@ -54,6 +54,7 @@ public class Whiteboard : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log(touchingLast);
         if(hasDrawn)
         {
             if(Time.time - lastDrew >= 2)
@@ -69,15 +70,14 @@ public class Whiteboard : MonoBehaviour
 
         if(touchingLast)
         {
-            Debug.Log(color[0]);
             texture.SetPixels(x, y, penSize, penSize, color);
 
-            //for (float t = 0.01f; t < 1.0f; t += 0.01f)
-            //{
-            //    int lerpX = (int)Mathf.Lerp(lastX, (float)x, t);
-            //    int lerpY = (int)Mathf.Lerp(lastY, (float)y, t);
-            //    texture.SetPixels(lerpX, lerpY, penSize, penSize, color);
-            //}
+            for (float t = 0.01f; t < 1.0f; t += 0.01f)
+            {
+                int lerpX = (int)Mathf.Lerp(lastX, (float)x, t);
+                int lerpY = (int)Mathf.Lerp(lastY, (float)y, t);
+                texture.SetPixels(lerpX, lerpY, penSize, penSize, color);
+            }
 
             texture.Apply();
 

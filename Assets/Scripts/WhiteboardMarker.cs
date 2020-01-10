@@ -9,38 +9,89 @@ public class WhiteboardMarker : MonoBehaviour
 
     private RaycastHit touch;
 
-    private bool lastTouch;
-    private Quaternion lastAngle;
+    //private bool lastTouch;
+    //private Quaternion lastAngle;
+
+    private Interactable interactable;
+
+    private void Start()
+    {
+        interactable = GetComponent<Interactable>();
+    }
+
+    //private void Update()
+    //{
+    //    //if(interactable.activeHand != null)
+    //    //{
+    //    //    if(interactable.activeHand.createPenAction.GetStateDown(interactable.activeHand.pose.inputSource))
+    //    //    {
+    //            Transform blackTip = transform.Find("BlackPart");
+    //            float blackHeight = blackTip.transform.localScale.y;
+    //            Debug.Log(blackHeight);
+    //            Vector3 blackPos = blackTip.transform.localPosition;
+
+    //            if (Physics.Raycast(blackPos, -blackTip.up, out touch, blackHeight))
+    //            {
+    //                if (touch.collider.CompareTag("Whiteboard"))
+    //                {
+    //                    whiteboard = touch.collider.GetComponent<Whiteboard>();
+    //                    whiteboard.SetTouchPosition(touch.textureCoord.x, touch.textureCoord.y);
+    //                    whiteboard.SetTouch(true);
+
+    //                    if (!lastTouch)
+    //                    {
+    //                        lastTouch = true;
+    //                        lastAngle = transform.rotation;
+    //                    }
+    //                }
+    //            }
+    //            else
+    //            {
+    //                whiteboard.SetTouch(false);
+    //                lastTouch = false;
+    //            }
+    //    //    }
+    //    //}
+
+    //    if (lastTouch)
+    //    {
+    //        transform.rotation = lastAngle;
+    //    }
+    //}
 
     private void Update()
     {
-        //Transform blackTip = transform.Find("BlackPart");
-        //float blackHeight = blackTip.transform.localScale.y;
-        //Vector3 blackPos = blackTip.transform.position;
-
-        if (Physics.Raycast(transform.position, -transform.up, out touch, transform.localScale.y))
+        if (interactable.activeHand != null)
         {
-            if(touch.collider.CompareTag("Whiteboard"))
-            {
-                whiteboard = touch.collider.GetComponent<Whiteboard>();
-                whiteboard.SetTouchPosition(touch.textureCoord.x, touch.textureCoord.y);
-                whiteboard.SetTouch(true);
+            Transform blackTip = transform.Find("BlackPart");
+            float blackHeight = blackTip.transform.localScale.y / 4;
+            Vector3 blackPos = blackTip.transform.position;
 
-                if(!lastTouch)
+            if (Physics.Raycast(blackPos, -blackTip.up, out touch, blackHeight))
+            {
+                //Debug.Log(touch.collider.tag);
+                if (touch.collider.CompareTag("Whiteboard"))
                 {
-                    lastTouch = true;
-                    lastAngle = transform.rotation;
+                    whiteboard = touch.collider.GetComponent<Whiteboard>();
+                    whiteboard.SetTouchPosition(touch.textureCoord.x, touch.textureCoord.y);
+                    whiteboard.SetTouch(true);
+
+                    //if (!lastTouch)
+                    //{
+                    //    lastTouch = true;
+                    //    lastAngle = transform.rotation;
+                    //}
                 }
             }
+            else
+            {
+                whiteboard.SetTouch(false);
+                //lastTouch = false;
+            }
         }
-        else
-        {
-            whiteboard.SetTouch(false);
-            lastTouch = false;
-        }
-        if (lastTouch)
-        {
-            transform.rotation = lastAngle;
-        }
+        //if (lastTouch)
+        //{
+        //    transform.rotation = lastAngle;
+        //}
     }
 }
